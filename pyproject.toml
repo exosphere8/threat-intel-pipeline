@@ -1,0 +1,13 @@
+[project]
+name = "threat-intel-pipeline"
+version = "0.1.0"
+description = "ETL pipeline that ingests a public malware C2 IP blocklist into a queryable database"
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+src = ["src", "tests"]

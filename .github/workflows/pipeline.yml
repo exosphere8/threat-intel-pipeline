@@ -1,0 +1,50 @@
+name: Run threat intel pipeline
+
+on:
+  schedule:
+    - cron: "17 6 * * *" # daily at 06:17 UTC
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  run-pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      # The SQLite DB persists across scheduled runs via cache so upserts
+      # are meaningful (a fresh checkout would otherwise "insert" everything
+      # every time). This is a portfolio project, so cache is good enough —
+      # a production pipeline would use a real managed database instead.
+      - name: Restore database cache
+        uses: actions/cache@v4
+        with:
+          path: data/threat_intel.db
+          key: threat-intel-db-${{ github.run_id }}
+          restore-keys: |
+            threat-intel-db-
+
+      - name: Run pipeline
+        run: python -m threat_pipeline.pipeline
+
+      - name: Generate report
+        run: python -m threat_pipeline.report
+
+      - name: Commit updated report
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/latest_report.md
+          git diff --cached --quiet && echo "No changes to commit" || git commit -m "Update threat intel report [skip ci]"
+          git push
