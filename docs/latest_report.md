@@ -1,10 +1,10 @@
 # Threat Intel Snapshot
 
-_Generated 2026-09-25T11:50:47.938160+00:00_
+_Generated 2026-09-26T11:24:51.691138+00:00_
 
 - **Total tracked indicators:** 5
 - **Currently online:** 1
-- **Last run:** 2026-09-25T11:50:47.713126+00:00 - status `success`, 0 inserted, 5 updated, 0 rejected
+- **Last run:** 2026-09-26T11:24:51.364431+00:00 - status `success`, 0 inserted, 5 updated, 0 rejected
 
 ## Top malware families
 
